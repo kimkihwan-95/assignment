@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from 'react'
-import { init, dispose, Chart } from 'klinecharts'
-import axios from 'axios';
+import { useEffect, useRef, useState } from "react";
+import { init, dispose, Chart } from "klinecharts";
+import axios from "axios";
 
 interface KlineData {
   timestamp: number;
@@ -13,42 +13,49 @@ interface KlineData {
   volume: number;
 }
 
+const intervals = [
+  { label: "1 Minute", value: "1m" },
+  { label: "1 Hour", value: "1h" },
+  { label: "1 Day", value: "1d" },
+  { label: "1 Week", value: "1w" },
+  { label: "1 Month", value: "1M" },
+];
+
 export default function BTCChart() {
+  const chartRef = useRef<Chart | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState("1h");
 
   useEffect(() => {
+    const chart = init("chart") as Chart;
+    chartRef.current = chart;
 
-    const chart = init('chart') as Chart
-
-    const fetchInitialData = async () => {
+    const fetchKlineData = async (interval: string) => {
       try {
-        const response = await axios.get('https://api.binance.com/api/v3/klines', {
+        const response = await axios.get("https://api.binance.com/api/v3/klines", {
           params: {
-            symbol: 'BTCUSDT',  // 코인 심볼
-            interval: '1s',     // 1초 간격
-            limit: 100,         // 최근 100개의 데이터 가져오기
+            symbol: "BTCUSDT",
+            interval,
+            limit: 100, // 최근 100개의 데이터 가져오기
           },
         });
-        console.log(response)
 
-        // Binance API 데이터 형식 변환
         const klineData: KlineData[] = response.data.map((kline: any) => ({
-          timestamp: kline[0],          // 타임스탬프 (밀리초)
-          open: parseFloat(kline[1]),   // 시가
-          high: parseFloat(kline[2]),   // 고가
-          low: parseFloat(kline[3]),    // 저가
-          close: parseFloat(kline[4]),  // 종가
-          volume: parseFloat(kline[5]), // 거래량
+          timestamp: kline[0],
+          open: parseFloat(kline[1]),
+          high: parseFloat(kline[2]),
+          low: parseFloat(kline[3]),
+          close: parseFloat(kline[4]),
+          volume: parseFloat(kline[5]),
         }));
-        chart.applyNewData(klineData); // 차트에 데이터 적용
-        chart.createIndicator('MA', false, { id: 'candle_pane' });
-        chart.createIndicator('VOL');
 
+        chart.applyNewData(klineData);
+        chart.createIndicator("MA", false); // MA(이동평균선) 추가
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error("Error fetching kline data:", error);
       }
     };
 
-    fetchInitialData();
+    fetchKlineData(selectedInterval);
 
     const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
     ws.onmessage = (event: MessageEvent) => {
@@ -68,10 +75,28 @@ export default function BTCChart() {
     };
 
     return () => {
+      dispose("chart");
       ws.close();
-      dispose('chart')
-    }
-  }, [])
+    };
+  }, [selectedInterval]);
 
-  return <div id="chart" style={{ width: 600, height: 600 }} />
+  return (
+    <div>
+      <div className="mb-4 flex justify-center space-x-4">
+        {intervals.map((interval) => (
+          <button
+            key={interval.value}
+            className={`px-4 py-2 ${selectedInterval === interval.value
+              ? "bg-500 text-white"
+              : "text-gray-500"
+              }`}
+            onClick={() => setSelectedInterval(interval.value)}
+          >
+            {interval.label}
+          </button>
+        ))}
+      </div>
+      <div id="chart" style={{ width: 800, height: 500 }} />
+    </div>
+  );
 }

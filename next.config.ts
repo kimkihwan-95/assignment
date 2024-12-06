@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  basePath: '/(repository 이름)',
+  // output: 'export',
+  // basePath: '/assignment',
 };
 
 export default nextConfig;

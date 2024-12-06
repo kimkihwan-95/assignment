@@ -24,7 +24,7 @@ export default function BTCChart() {
         const response = await axios.get('https://api.binance.com/api/v3/klines', {
           params: {
             symbol: 'BTCUSDT',  // 코인 심볼
-            interval: '1s',     // 1분 간격
+            interval: '1s',     // 1초 간격
             limit: 100,         // 최근 100개의 데이터 가져오기
           },
         });
@@ -53,7 +53,6 @@ export default function BTCChart() {
     const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
     ws.onmessage = (event: MessageEvent) => {
       const message = JSON.parse(event.data);
-      console.log(message, 'mess')
       const kline = message.k;
 
       const newKline: KlineData = {
@@ -68,10 +67,8 @@ export default function BTCChart() {
       chart.updateData(newKline); // 실시간 데이터로 차트 업데이트
     };
 
-    // console.log(ws)
-
     return () => {
-      // ws.close();
+      ws.close();
       dispose('chart')
     }
   }, [])

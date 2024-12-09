@@ -86,9 +86,6 @@ export default function BTCChart() {
     };
   }, [klineData]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>

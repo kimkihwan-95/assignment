@@ -1,4 +1,5 @@
 domain - https://kimkihwan-95.github.io/assignment/en/trade/BTCUSDT
+localhost - http://localhost:(port)/assignment/en/trade/BTCUSDT
 
 app/en/trade/BTCUSDT 구조로 경로 라우팅 및 경로 설정
 

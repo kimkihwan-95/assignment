@@ -92,7 +92,7 @@ export default function BTCChart() {
 
   return (
     <div>
-      <div className="mb-4 flex justify-center space-x-4">
+      <div className="mb-5 flex justify-center space-x-4">
         {intervals.map((interval) => (
           <button
             key={interval.value}
@@ -106,7 +106,7 @@ export default function BTCChart() {
           </button>
         ))}
       </div>
-      <div id="chart" style={{ width: 800, height: 500 }} />
+      <div id="chart" className="w-[800px] h-[500px]"/>
     </div>
   );
 }

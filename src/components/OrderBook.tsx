@@ -81,7 +81,7 @@ export default function OrderBook() {
           className={`px-4 py-2 bg-red-500 rounded w-[20px]`}
         ></button>
       </div>
-      
+
       <div className="mb-4 flex justify-between items-center text-lg font-bold">
         {currentPrice !== null && (
           <span
@@ -100,10 +100,10 @@ export default function OrderBook() {
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-2 text-center font-bold text-sm">
-        <div className="text-gray-500">Price</div>
-        <div className="text-gray-500">Amount</div>
-        <div className="text-gray-500">Total</div>
+      <div className="grid grid-cols-3 gap-2 mb-2 text-center font-bold text-gray-500 text-sm">
+        <div >Price</div>
+        <div >Amount</div>
+        <div >Total</div>
       </div>
 
       <div className="h-[400px] overflow-auto">
